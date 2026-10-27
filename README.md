@@ -6,9 +6,9 @@ DevFlow is a repository activity dashboard for public GitHub repositories. It fe
 
 ## Project links
 
-- Live application: `https://devflow-eight-tau.vercel.app/`
-- Source repository: `https://github.com/yashvardhan25bcs10761-dot/DevFlow`
-- Demo video: `https://drive.google.com/file/d/1ztlwR9BHb9HC4hBunz5wJNtMSJXYhR5A/view?usp=drive_link`
+- Live application: <a href="https://devflow-eight-tau.vercel.app" target="_blank" rel="noopener noreferrer">Open DevFlow ↗</a>
+- Source repository: <a href="https://github.com/yashvardhan25bcs10761-dot/DevFlow" target="_blank" rel="noopener noreferrer">Open the GitHub repository ↗</a>
+- Demo video: <a href="https://drive.google.com/file/d/1ztlwR9BHb9HC4hBunz5wJNtMSJXYhR5A/view?usp=drive_link" target="_blank" rel="noopener noreferrer">Watch the demo ↗</a>
 - Screenshots: see the [screenshots section](#screenshots).
 
 ## Screenshots
