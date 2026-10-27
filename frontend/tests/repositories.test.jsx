@@ -110,6 +110,48 @@ describe('Repositories Page UI (SPEC Section 11 & 12)', () => {
     });
   });
 
+  it('shows saving state only on the repository whose save request is pending', async () => {
+    const matches = [
+      { githubId: 401, fullName: 'example/first', visibility: 'public', description: 'First repo', stars: 3, forks: 1, openIssuesCount: 0, htmlUrl: 'https://github.com/example/first' },
+      { githubId: 402, fullName: 'example/second', visibility: 'public', description: 'Second repo', stars: 2, forks: 1, openIssuesCount: 0, htmlUrl: 'https://github.com/example/second' },
+    ];
+    let finishSave;
+    const pendingSave = new Promise((resolve) => { finishSave = resolve; });
+
+    global.fetch = vi.fn((url, options = {}) => {
+      if (url.includes('/api/v1/auth/me')) {
+        return Promise.resolve({ ok: true, json: async () => ({ success: true, data: { user: { id: 'u1', name: 'Tester', email: 'test@devflow.io' } } }) });
+      }
+      if (url.includes('/api/v1/repositories/search?q=')) {
+        return Promise.resolve({ ok: true, json: async () => ({ success: true, data: { repositories: matches } }) });
+      }
+      if (url === '/api/v1/repositories' && options.method === 'POST') return pendingSave;
+      if (url === '/api/v1/repositories') {
+        return Promise.resolve({ ok: true, json: async () => ({ success: true, data: [] }) });
+      }
+      return Promise.reject(new Error(`Unhandled URL: ${url}`));
+    });
+
+    render(<MemoryRouter><AuthProvider><Repositories /></AuthProvider></MemoryRouter>);
+    const input = screen.getByPlaceholderText(/Owner, repository name/i);
+    fireEvent.change(input, { target: { value: 'example' } });
+    fireEvent.submit(input.closest('form'));
+
+    const saveButtons = await screen.findAllByRole('button', { name: /Save Repository/i });
+    expect(saveButtons).toHaveLength(2);
+    fireEvent.click(saveButtons[0]);
+
+    expect(await screen.findByRole('button', { name: /Saving\.\.\./i })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /Save Repository/i })).toBeEnabled();
+
+    finishSave({
+      ok: true,
+      json: async () => ({ success: true, data: { _id: 'repo-401', fullName: 'example/first' } }),
+    });
+    expect(await screen.findByText('Saved in Dashboard')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Save Repository/i })).toBeEnabled();
+  });
+
   it('searches by a repository name and renders selectable GitHub matches', async () => {
     const matches = [
       { githubId: 201, fullName: 'facebook/react', visibility: 'public', description: 'UI library', stars: 200, forks: 20, openIssuesCount: 5, htmlUrl: 'https://github.com/facebook/react' },

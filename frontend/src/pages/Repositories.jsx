@@ -33,7 +33,7 @@ export default function Repositories() {
   const [savedError, setSavedError] = useState('');
 
   const [actionMessage, setActionMessage] = useState(null);
-  const [isSaving, setIsSaving] = useState(false);
+  const [savingRepositories, setSavingRepositories] = useState(() => new Set());
   const [refreshingId, setRefreshingId] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
   const [repositoryToRemove, setRepositoryToRemove] = useState(null);
@@ -144,7 +144,7 @@ export default function Repositories() {
   }
 
   async function handleSave(fullName) {
-    setIsSaving(true);
+    setSavingRepositories((current) => new Set(current).add(fullName));
     try {
       const res = await fetch('/api/v1/repositories', {
         method: 'POST',
@@ -158,13 +158,17 @@ export default function Repositories() {
         throw new Error(data.error?.message || 'Failed to save repository');
       }
 
-      setSavedRepos([data.data, ...savedRepos]);
+      setSavedRepos((current) => [data.data, ...current]);
       window.dispatchEvent(new Event('devflow:repositories-changed'));
       showNotification('success', `"${fullName}" added to your dashboard.`);
     } catch (err) {
       showNotification('error', err.message);
     } finally {
-      setIsSaving(false);
+      setSavingRepositories((current) => {
+        const next = new Set(current);
+        next.delete(fullName);
+        return next;
+      });
     }
   }
 
@@ -363,8 +367,12 @@ export default function Repositories() {
                       <CheckCircle size={15} /> Saved in Dashboard
                     </span>
                   ) : (
-                    <button className="button button-primary search-save-button" onClick={() => handleSave(searchResult.fullName)} disabled={isSaving}>
-                      <PlusCircle size={15} /> {isSaving ? 'Saving...' : 'Save Repository'}
+                    <button
+                      className="button button-primary search-save-button"
+                      onClick={() => handleSave(searchResult.fullName)}
+                      disabled={savingRepositories.has(searchResult.fullName)}
+                    >
+                      <PlusCircle size={15} /> {savingRepositories.has(searchResult.fullName) ? 'Saving...' : 'Save Repository'}
                     </button>
                   )}
                 </div>
