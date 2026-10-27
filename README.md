@@ -147,7 +147,7 @@ Backend tests use Vitest, Supertest, and an in-memory MongoDB instance. GitHub r
 
 ## Deployment
 
-Deployment is not configured or verified in this repository. The intended setup is a Vercel frontend and a Render Express API, with MongoDB Atlas for persistence. `frontend/vercel.json` rewrites `/api/*` to a placeholder Render URL before applying the SPA fallback; replace that hostname with the real Render service URL before relying on API requests. Configure the Render service with root directory `backend`, build command `npm install`, start command `npm start`, health check `/api/v1/health`, `NODE_ENV=production`, and `CLIENT_URL` set to the Vercel production origin. Keep `MONGODB_URI`, `JWT_SECRET`, and `GITHUB_TOKEN` in Render environment variables. Atlas must allow the Render service's outbound IP ranges. No live URL is claimed here.
+Production deployment: [DevFlow frontend](https://devflow-eight-tau.vercel.app) on Vercel, [Express API](https://devflow-api-vjiz.onrender.com) on Render, and MongoDB Atlas for persistence. `frontend/vercel.json` rewrites `/api/*` to the Render service before applying the SPA fallback. The Render service uses root directory `backend`, build command `npm install`, start command `npm start`, health check `/api/v1/health`, `NODE_ENV=production`, and `CLIENT_URL` set to the Vercel production origin. Keep `MONGODB_URI`, `JWT_SECRET`, and `GITHUB_TOKEN` in Render environment variables. Atlas allows the Render Oregon outbound IP ranges. The API health endpoint and SPA routes were verified after deployment. The Render Free instance can spin down after inactivity, delaying the first request.
 
 ## Security notes
 
