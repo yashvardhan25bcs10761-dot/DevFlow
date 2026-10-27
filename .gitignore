@@ -33,3 +33,7 @@ coverage/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Keep project instructions and specification local rather than publishing them.
+/AGENTS.md
+/SPEC.md
