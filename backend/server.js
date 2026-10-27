@@ -14,7 +14,7 @@ async function startServer() {
     // Attempt database connection on server start
     await connectDB();
 
-    const server = app.listen(env.PORT, () => {
+    const server = app.listen(env.PORT, '0.0.0.0', () => {
       console.log(`[DevFlow Backend] Server running in ${env.NODE_ENV} mode on http://localhost:${env.PORT}`);
       console.log(`[DevFlow Backend] Health check available at http://localhost:${env.PORT}/api/v1/health`);
       console.log(`[DevFlow Backend] CORS enabled for ${env.CLIENT_URL}`);

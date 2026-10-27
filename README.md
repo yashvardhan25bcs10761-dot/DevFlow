@@ -147,7 +147,7 @@ Backend tests use Vitest, Supertest, and an in-memory MongoDB instance. GitHub r
 
 ## Deployment
 
-Deployment is not configured or verified in this repository. For a future deployment, the documented target is a static frontend on Vercel and the Express API on Render, with a same-origin `/api/*` rewrite from the frontend to the backend. Configure the backend environment variables in the hosting provider, set `NODE_ENV=production` and `CLIENT_URL` to the frontend origin, and configure the provider health check to `/api/v1/health`. Create and verify the rewrite configuration before publishing; no live URL is claimed here.
+Deployment is not configured or verified in this repository. The intended setup is a Vercel frontend and a Render Express API, with MongoDB Atlas for persistence. `frontend/vercel.json` rewrites `/api/*` to a placeholder Render URL before applying the SPA fallback; replace that hostname with the real Render service URL before relying on API requests. Configure the Render service with root directory `backend`, build command `npm install`, start command `npm start`, health check `/api/v1/health`, `NODE_ENV=production`, and `CLIENT_URL` set to the Vercel production origin. Keep `MONGODB_URI`, `JWT_SECRET`, and `GITHUB_TOKEN` in Render environment variables. Atlas must allow the Render service's outbound IP ranges. No live URL is claimed here.
 
 ## Security notes
 
@@ -166,7 +166,7 @@ Deployment is not configured or verified in this repository. For a future deploy
 - Repository renames and transfers are not automatically reconciled.
 - GitHub API rate limits and network failures can temporarily prevent lookups or analysis.
 - A free-tier backend may sleep while idle; the first request can take 30–60 seconds.
-- Deployment configuration and the full real-GitHub/Atlas browser acceptance flow have not been verified in this checkout.
+- Hosting is not configured, and the full real-GitHub/Atlas browser acceptance flow has not been verified in this checkout.
 
 ## Project links
 

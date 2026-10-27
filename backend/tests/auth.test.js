@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 import app from '../app.js';
@@ -86,6 +86,24 @@ describe('Authentication & Preferences API (SPEC Sections 7, 10, 12)', () => {
   });
 
   describe('POST /api/v1/auth/login', () => {
+    it('sets secure production cookie attributes', async () => {
+      await request(app).post('/api/v1/auth/register').send(validUser);
+      vi.stubEnv('NODE_ENV', 'production');
+
+      try {
+        const res = await request(app)
+          .post('/api/v1/auth/login')
+          .send({ email: validUser.email, password: validUser.password });
+
+        expect(res.status).toBe(200);
+        expect(res.headers['set-cookie'][0]).toContain('HttpOnly');
+        expect(res.headers['set-cookie'][0]).toContain('Secure');
+        expect(res.headers['set-cookie'][0]).toContain('SameSite=Lax');
+      } finally {
+        vi.unstubAllEnvs();
+      }
+    });
+
     it('authenticates valid credentials, sets cookie, and returns user profile without passwordHash', async () => {
       await request(app).post('/api/v1/auth/register').send(validUser);
 
