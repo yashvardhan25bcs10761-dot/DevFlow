@@ -171,6 +171,6 @@ Deployment is not configured or verified in this repository. For a future deploy
 ## Project links
 
 - Live URL: not deployed
-- Repository URL: not configured
+- Repository URL: https://github.com/yashvardhan25bcs10761-dot/DevFlow
 - Demo video: not recorded
 - Screenshots: not captured
